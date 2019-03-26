@@ -1,0 +1,1 @@
+# purescript-simple-gql-query
