@@ -7,10 +7,14 @@
   "license": "MIT",
   "scripts": {
     "build": "pulp build --no-check-main --src-path ./src -o ./output",
+    "test": "pulp test",
     "postinstall": "bower install --allow-root"
   },
   "dependencies": {
+    "keccak": "^2.0.0",
     "pulp": "^12.3.1",
-    "purescript": "^0.12.3"
+    "purescript": "^0.12.3",
+    "secp256k1": "^3.6.2",
+    "xhr2": "^0.1.4"
   }
 }

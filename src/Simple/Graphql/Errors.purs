@@ -1,5 +1,5 @@
 module Simple.Graphql.Errors 
-  ( RelayerError(..)
+  ( GraphqlQueryError(..)
   , handleError
   ) where
 
@@ -17,7 +17,7 @@ import Effect.Aff (Error, error)
 -- | Errors
 -------------------------------------------------------------------------------
 -- | All possible errors within the relayer
-data RelayerError = InvalidJsonBody String
+data GraphqlQueryError = InvalidJsonBody String
                   | HttpError StatusCode String
                   | HttpResponseFormatError String
                   | HttpConnectionError String
@@ -26,17 +26,17 @@ data RelayerError = InvalidJsonBody String
                   | NotValidEthereumAddress String
                   | InvalidSignedOrder String
 
-derive instance eqRelayerError :: Eq RelayerError
-derive instance genericRelayerError :: Generic RelayerError _
-instance showInsertRelayerError :: Show RelayerError where
+derive instance eqGraphqlQueryError :: Eq GraphqlQueryError
+derive instance genericGraphqlQueryError :: Generic GraphqlQueryError _
+instance showInsertGraphqlQueryError :: Show GraphqlQueryError where
   show = genericShow
 
 -------------------------------------------------------------------------------
 -- | handleError
 -------------------------------------------------------------------------------
--- | General error handler for the RelayerError. Maps from RelayerError to 
+-- | General error handler for the GraphqlQueryError. Maps from GraphqlQueryError to 
 --   Error.
-handleError :: forall a m. (MonadError Error m) => RelayerError -> m a
+handleError :: forall a m. (MonadError Error m) => GraphqlQueryError -> m a
 handleError (HttpError (StatusCode sc) err) = throwError <<< error $ "Http Error, status code: " <> show sc <> ", Error: " <> err
 handleError (HttpResponseFormatError err) = throwError <<< error $ "Failed to format http repsonse: " <> err
 handleError (HttpConnectionError err) = throwError <<< error $ "Failed to connect to remote host: " <> err

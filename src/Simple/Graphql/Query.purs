@@ -1,5 +1,5 @@
 module Simple.Graphql.Query
-  ( query
+  ( runQuery
   ) where
 
 import Prelude
@@ -21,23 +21,23 @@ import Network.Ethereum.Core.HexString (HexString, mkHexString, unHex)
 import Network.Ethereum.Core.Signatures (Address, mkAddress, unAddress)
 import Simple.JSON as JSON
 
-import Simple.Graphql.Errors (RelayerError(..))
+import Simple.Graphql.Errors (GraphqlQueryError(..))
 import Simple.Graphql.Types (GraphQlQuery(..), GraphQlQueryResponse)
 
 -------------------------------------------------------------------------------
--- | queryGraphQlApi
+-- | runQuery
 -------------------------------------------------------------------------------
--- | General function for querying the graphql api.
-query
+-- | General function for querying a graphql api.
+runQuery
   :: forall a m. 
      JSON.ReadForeign a
   => MonadAff m 
-  => MonadThrow RelayerError m
+  => MonadThrow GraphqlQueryError m
   => URL
   -> Maybe String
   -> GraphQlQuery a 
   -> m (GraphQlQueryResponse a)
-query url mauth (GraphQlQuery gqlBody _) = post mauth url gqlBody
+runQuery url mauth (GraphQlQuery gqlBody _) = post mauth url gqlBody
 
 -------------------------------------------------------------------------------
 -- | post
@@ -48,7 +48,7 @@ post
      JSON.WriteForeign a 
   => JSON.ReadForeign b
   => MonadAff m 
-  => MonadThrow RelayerError m
+  => MonadThrow GraphqlQueryError m
   => Maybe String
   -> URL 
   -> a 
@@ -79,7 +79,7 @@ decodeWithError
   :: forall a.
      JSON.ReadForeign a
   => AX.Response (Either AX.ResponseFormatError String)
-  -> Either RelayerError a
+  -> Either GraphqlQueryError a
 decodeWithError res = case res.body of
     Left err -> Left <<< HttpResponseFormatError $ AX.printResponseFormatError err
     Right bodyStr | statusOk res.status -> case JSON.readJSON bodyStr of
@@ -106,7 +106,7 @@ wrapDoubleQuotes str = "\"" <> str <> "\""
 -- | stringToAddress
 -------------------------------------------------------------------------------
 -- | Util function to turn a string into an Ethereum Address. Throws on failure.
-stringToAddress :: String -> Either RelayerError Address
+stringToAddress :: String -> Either GraphqlQueryError Address
 stringToAddress address =   
   let mAddress  = mkAddress =<< mkHexString address
   in maybe (Left $ NotValidEthereumAddress address) Right mAddress

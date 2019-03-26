@@ -5,7 +5,8 @@ module Simple.Graphql.Types
   , GraphQlQueryResponseError(..)
   , Promise(..)
   , fromAff
-  -- , Address
+  , QueryT(..)
+  , runQueryT
   ) where
 
 
@@ -28,8 +29,28 @@ import Network.Ethereum.Core.BigNumber (BigNumber)
 import Network.Ethereum.Core.HexString (HexString)
 import Network.Ethereum.Core.Signatures (Address)
 import OhYes (class HasTSRep, toTSRep)
-import Simple.Graphql.Errors (RelayerError, handleError)
+import Simple.Graphql.Errors (GraphqlQueryError, handleError)
 import Type.Proxy (Proxy(..))
+
+-------------------------------------------------------------------------------
+-- | QueryT
+-------------------------------------------------------------------------------
+newtype QueryT a = QueryT (ExceptT GraphqlQueryError Aff a)
+
+derive newtype instance functorQueryT :: Functor QueryT
+derive newtype instance applyQueryT :: Apply QueryT
+derive newtype instance applicativeQueryT :: Applicative QueryT
+derive newtype instance bindQueryT :: Bind QueryT 
+derive newtype instance monadQueryT :: Monad QueryT 
+derive newtype instance monadThrowQueryT :: MonadThrow GraphqlQueryError QueryT
+derive newtype instance monadErrorQueryT :: MonadError GraphqlQueryError QueryT
+derive newtype instance monadEffectQueryT :: MonadEffect QueryT
+derive newtype instance monadAffQueryT :: MonadAff QueryT
+
+runQueryT :: forall a. QueryT a -> Aff a
+runQueryT (QueryT f) = (errH =<< (runExceptT f))
+  where 
+    errH = either handleError pure
 
 -------------------------------------------------------------------------------
 -- | GraphqlBody
