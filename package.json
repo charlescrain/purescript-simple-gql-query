@@ -1,0 +1,16 @@
+{
+  "name": "purescript-simple-gql-query",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:charlescrain/purescript-simple-gql-query.git",
+  "author": "Charles Crain <craincharles@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "pulp build --no-check-main --src-path ./src -o ./output",
+    "postinstall": "bower install --allow-root"
+  },
+  "dependencies": {
+    "pulp": "^12.3.1",
+    "purescript": "^0.12.3"
+  }
+}
