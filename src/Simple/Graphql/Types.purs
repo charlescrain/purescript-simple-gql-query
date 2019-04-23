@@ -26,21 +26,21 @@ import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect)
 import HasJSRep (class HasJSRep)
 import OhYes (class HasTSRep, toTSRep)
-import Simple.Graphql.Errors (GraphqlQueryError, handleError)
+import Simple.Graphql.Errors (HttpRequestError, handleError)
 import Type.Proxy (Proxy(..))
 
 -------------------------------------------------------------------------------
 -- | QueryT
 -------------------------------------------------------------------------------
-newtype QueryT a = QueryT (ExceptT GraphqlQueryError Aff a)
+newtype QueryT a = QueryT (ExceptT HttpRequestError Aff a)
 
 derive newtype instance functorQueryT :: Functor QueryT
 derive newtype instance applyQueryT :: Apply QueryT
 derive newtype instance applicativeQueryT :: Applicative QueryT
 derive newtype instance bindQueryT :: Bind QueryT 
 derive newtype instance monadQueryT :: Monad QueryT 
-derive newtype instance monadThrowQueryT :: MonadThrow GraphqlQueryError QueryT
-derive newtype instance monadErrorQueryT :: MonadError GraphqlQueryError QueryT
+derive newtype instance monadThrowQueryT :: MonadThrow HttpRequestError QueryT
+derive newtype instance monadErrorQueryT :: MonadError HttpRequestError QueryT
 derive newtype instance monadEffectQueryT :: MonadEffect QueryT
 derive newtype instance monadAffQueryT :: MonadAff QueryT
 
