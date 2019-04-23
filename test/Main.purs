@@ -9,10 +9,12 @@ import Effect (Effect)
 import Effect.Aff (joinFiber, launchAff, launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Console (log)
+import Foreign.Object (empty)
 import Simple.Graphql.Errors (handleError)
 import Simple.Graphql.Query (runQuery)
 import Simple.Graphql.Types (GraphQlQuery(..), runQueryT)
 import Simple.Graphql.Utils (wrapDoubleQuotes)
+import Simple.JSON (class WriteForeign)
 import Type.Proxy (Proxy(..))
 
 
@@ -43,12 +45,12 @@ type AllErc721TokensResponse = {
 -------------------------------------------------------------------------------
 -- | buildAllErc721Tokens
 -------------------------------------------------------------------------------
-buildAllErc721Tokens :: GraphQlQuery AllErc721TokensResponse
-buildAllErc721Tokens = GraphQlQuery { query: query } (Proxy :: Proxy AllErc721TokensResponse)
+buildAllErc721Tokens :: GraphQlQuery {first :: Int} AllErc721TokensResponse
+buildAllErc721Tokens = GraphQlQuery { query: query, variables: {first: 3} } (Proxy :: Proxy AllErc721TokensResponse)
   where
     query = """
-    {
-    	allErc721Tokens(first:10) {
+    query AllErc721Tokens($first: Int) {
+    	allErc721Tokens(first:$first) {
         nodes {
           tokenId
           owner

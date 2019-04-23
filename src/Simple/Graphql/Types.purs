@@ -55,21 +55,22 @@ runQueryT (QueryT f) = (errH =<< (runExceptT f))
 -------------------------------------------------------------------------------
 -- | GraphqlBody
 -------------------------------------------------------------------------------
-type GraphqlBody = {
-  query :: String
+type GraphqlBody vs = {
+  query :: String,
+  variables :: vs
 }
 
 -------------------------------------------------------------------------------
 -- | GraphQlQuery
 -------------------------------------------------------------------------------
-data GraphQlQuery a = GraphQlQuery GraphqlBody (Proxy a)
+data GraphQlQuery vs a  = GraphQlQuery (GraphqlBody vs) (Proxy a)
 
-derive instance genericGraphQlQuery :: Generic (GraphQlQuery a) _
+derive instance genericGraphQlQuery :: Generic (GraphQlQuery vs a) _
 
-instance showGraphQlQuery :: (Show a) => Show (GraphQlQuery a) where
+instance showGraphQlQuery :: (Show a, Show vs) => Show (GraphQlQuery vs a) where
   show = genericShow
 
-instance eqGraphQlQuery :: (Eq a) => Eq (GraphQlQuery a) where
+instance eqGraphQlQuery :: (Eq a, Eq vs) => Eq (GraphQlQuery vs a) where
   eq = genericEq
 
 -------------------------------------------------------------------------------

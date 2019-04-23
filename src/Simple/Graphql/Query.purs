@@ -29,13 +29,14 @@ import Simple.Graphql.Types (GraphQlQuery(..), GraphQlQueryResponse)
 -------------------------------------------------------------------------------
 -- | General function for querying a graphql api.
 runQuery
-  :: forall a m. 
+  :: forall vs a m. 
      JSON.ReadForeign a
+  => JSON.WriteForeign vs
   => MonadAff m 
   => MonadThrow GraphqlQueryError m
   => URL
   -> Maybe String
-  -> GraphQlQuery a 
+  -> GraphQlQuery vs a 
   -> m (GraphQlQueryResponse a)
 runQuery url mauth (GraphQlQuery gqlBody _) = post mauth url gqlBody
 
