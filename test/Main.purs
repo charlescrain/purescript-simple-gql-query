@@ -14,7 +14,6 @@ import Simple.Graphql.Errors (handleError)
 import Simple.Graphql.Query (runQuery)
 import Simple.Graphql.Types (GraphQlQuery(..), runQueryT)
 import Simple.Graphql.Utils (wrapDoubleQuotes)
-import Simple.JSON (class WriteForeign)
 import Type.Proxy (Proxy(..))
 
 
