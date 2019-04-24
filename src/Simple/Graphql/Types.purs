@@ -4,6 +4,7 @@ module Simple.Graphql.Types
   , GraphQlQueryResponse(..)
   , GraphQlQueryResponseError(..)
   , Promise(..)
+  , EmptyResponse(..)
   , fromAff
   , QueryT(..)
   , runQueryT
@@ -27,6 +28,7 @@ import Effect.Class (class MonadEffect)
 import HasJSRep (class HasJSRep)
 import OhYes (class HasTSRep, toTSRep)
 import Simple.Graphql.Errors (HttpRequestError, handleError)
+import Simple.JSON (class ReadForeign)
 import Type.Proxy (Proxy(..))
 
 -------------------------------------------------------------------------------
@@ -89,6 +91,13 @@ type GraphQlQueryResponse a =  {
   data :: Maybe a,
   errors :: Maybe (Array GraphQlQueryResponseError)
 }
+
+-------------------------------------------------------------------------------
+-- | EmptyResponse
+-------------------------------------------------------------------------------
+newtype EmptyResponse = EmptyResponse Unit
+instance readEmptyResponse :: ReadForeign EmptyResponse where
+  readImpl = const (pure $ EmptyResponse unit)
 
 -------------------------------------------------------------------------------
 -- | Promise
