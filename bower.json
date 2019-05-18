@@ -20,9 +20,6 @@
     "purescript-has-js-rep": "^0.1.0",
     "purescript-node-process": "^6.0.0",
     "purescript-simple-json": "^4.4.0",
-    "purescript-argonaut": "^5.0.0",
-    "purescript-argonaut-generic": "^4.0.0",
-    "purescript-eth-core": "https://github.com/charlescrain/purescript-eth-core.git#master",
     "purescript-parsing": "^5.0.2"
   },
   "devDependencies": {
