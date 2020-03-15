@@ -164,10 +164,12 @@ mkHttpRequest
   -> Maybe a 
   -> m b
 mkHttpRequest method mAuth url mbody = do
-  eres <- liftAff (try $ AX.request req)
+  eres <- liftAff $ AX.request req
   case eres of
-    Left err -> throwError <<< HttpConnectionError <<< show $ err
-    Right res -> either throwError pure $ decodeWithError (res)
+    Left err -> throwError <<< HttpConnectionError <<< AX.printError $ err
+    Right res -> if statusOk res.status
+        then either throwError pure $ decodeWithError res.body
+        else throwError (HttpError res.status res.statusText)
   where
     contentType = maybe Nothing (const (Just <<< ContentType $ MediaType "application/json")) mbody
     content = maybe Nothing (Just <<< RequestBody.string <<< JSON.writeJSON) mbody
@@ -195,12 +197,14 @@ mkHttpRequest_
   -> Maybe a 
   -> m Unit
 mkHttpRequest_ method mAuth url mbody = do
-  eres <- liftAff (try $ AX.request req)
-  case eres of
+  eeres <- liftAff (try $ AX.request req)
+  case eeres of
     Left err -> throwError <<< HttpConnectionError <<< show $ err
-    Right res -> if statusOk res.status
-      then pure unit
-      else throwError (HttpError res.status res.statusText)
+    Right (Left err) -> throwError <<< HttpConnectionError <<< AX.printError $ err
+    Right (Right res) ->
+     if statusOk res.status
+          then pure unit
+          else throwError (HttpError res.status res.statusText)
   where
     contentType = maybe Nothing (const (Just <<< ContentType $ MediaType "application/json")) mbody
     content = maybe Nothing (Just <<< RequestBody.string <<< JSON.writeJSON) mbody
@@ -222,14 +226,11 @@ mkHttpRequest_ method mAuth url mbody = do
 decodeWithError 
   :: forall a.
      JSON.ReadForeign a
-  => AX.Response (Either AX.ResponseFormatError String)
+  => String
   -> Either HttpRequestError a
-decodeWithError res = case res.body of
-    Left err -> Left <<< HttpResponseFormatError $ AX.printResponseFormatError err
-    Right bodyStr | statusOk res.status -> case JSON.readJSON bodyStr of
-                        Left err -> Left (InvalidJsonBody ("Error: " <> show err <> ": JsonBody" <> bodyStr))
-                        Right obj -> Right obj
-                  | otherwise -> Left (HttpError res.status (res.statusText <> " : " <> bodyStr))
+decodeWithError body = case JSON.readJSON body of
+   Left err -> Left (InvalidJsonBody ("Error: " <> show err <> ": JsonBody" <> body))
+   Right obj -> Right obj
 
 -------------------------------------------------------------------------------
 -- | statusOk

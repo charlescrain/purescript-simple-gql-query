@@ -2,23 +2,12 @@ module Simple.Graphql.Query
   ( runQuery
   ) where
 
-import Prelude
 
 import Affjax (URL)
-import Affjax as AX
-import Affjax.RequestBody as RequestBody
-import Affjax.RequestHeader (RequestHeader(..))
-import Affjax.ResponseFormat as ResponseFormat
-import Affjax.StatusCode (StatusCode(..))
-import Control.Monad.Error.Class (class MonadThrow, try)
-import Data.Array (catMaybes)
-import Data.Either (Either(..), either)
-import Data.HTTP.Method (Method(..))
-import Data.Maybe (Maybe(..), maybe)
-import Data.MediaType (MediaType(..))
-import Effect.Aff (throwError)
-import Effect.Aff.Class (class MonadAff, liftAff)
-import Simple.Graphql.Errors (HttpRequestError(..))
+import Control.Monad.Error.Class (class MonadThrow)
+import Data.Maybe (Maybe(..))
+import Effect.Aff.Class (class MonadAff)
+import Simple.Graphql.Errors (HttpRequestError)
 import Simple.Graphql.Http (post)
 import Simple.Graphql.Types (GraphQlQuery(..), GraphQlQueryResponse)
 import Simple.JSON as JSON
