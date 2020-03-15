@@ -7,8 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "pulp build --no-check-main --src-path ./src -o ./output",
-    "test": "pulp test",
-    "postinstall": "bower install --allow-root"
+    "test": "pulp test"
   },
   "dependencies": {
     "keccak": "^2.0.0",
