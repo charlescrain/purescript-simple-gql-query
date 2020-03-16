@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "keccak": "^2.0.0",
+    "minimist": "^1.2.5",
     "pulp": "^13.0.0",
     "purescript": "^0.13.6",
     "purty": "^6.0.2",
