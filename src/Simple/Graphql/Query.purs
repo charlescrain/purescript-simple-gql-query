@@ -26,4 +26,4 @@ runQuery
   -> Maybe String
   -> GraphQlQuery vs a 
   -> m (GraphQlQueryResponse a)
-runQuery url mauth (GraphQlQuery gqlBody _) = post mauth url (Just gqlBody)
+runQuery url mauth (GraphQlQuery gqlBody) = post mauth url (Just gqlBody)

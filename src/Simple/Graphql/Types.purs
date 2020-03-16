@@ -23,7 +23,6 @@ import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect)
 import Simple.Graphql.Errors (HttpRequestError, handleError)
 import Simple.JSON (class ReadForeign)
-import Type.Proxy (Proxy)
 
 -------------------------------------------------------------------------------
 -- | QueryT
@@ -56,7 +55,7 @@ type GraphqlBody vs = {
 -------------------------------------------------------------------------------
 -- | GraphQlQuery
 -------------------------------------------------------------------------------
-data GraphQlQuery vs a  = GraphQlQuery (GraphqlBody vs) (Proxy a)
+data GraphQlQuery vs a  = GraphQlQuery (GraphqlBody vs) 
 
 derive instance genericGraphQlQuery :: Generic (GraphQlQuery vs a) _
 

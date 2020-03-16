@@ -9,7 +9,6 @@ import Effect.Class (liftEffect)
 import Effect.Exception (throw)
 import Simple.Graphql.Query (runQuery)
 import Simple.Graphql.Types (GraphQlQuery(..), runQueryT)
-import Type.Proxy (Proxy(..))
 
 main :: Effect Unit
 main =
@@ -39,7 +38,7 @@ type TestCountriesRes
 -- | buildAllErc721Tokens
 -------------------------------------------------------------------------------
 buildAllErc721Tokens :: GraphQlQuery { code :: String } TestCountriesRes
-buildAllErc721Tokens = GraphQlQuery { query: query, variables: { code: "AF" } } (Proxy :: Proxy TestCountriesRes)
+buildAllErc721Tokens = GraphQlQuery { query: query, variables: { code: "AF" } }
   where
   query =
     """
